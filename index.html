@@ -2,26 +2,84 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Meu Console Pro</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Meu Sistema Pro</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; transition: 0.5s; overflow: hidden; background: #1a1a1a; }
+        .status-bar { height: 25px; background: rgba(0,0,0,0.5); color: white; display: flex; justify-content: space-between; padding: 0 15px; align-items: center; font-size: 12px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, 90px); gap: 20px; padding: 40px; justify-content: center; }
+        .app-item { text-align: center; color: white; cursor: pointer; position: relative; }
+        .icon { width: 70px; height: 70px; background: #333; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .label { font-size: 12px; margin-top: 8px; }
+        .btn-apagar { position: absolute; top: -5px; right: -5px; background: red; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-weight: bold; }
+        
+        /* Janela */
+        #window { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: none; z-index: 100; }
+        .header { height: 50px; background: #222; color: white; display: flex; align-items: center; padding: 0 15px; }
+        iframe { width: 100%; height: calc(100% - 50px); border: none; }
+    </style>
 </head>
-<body id="corpo">
+<body id="os-bg">
+    <div class="status-bar"><span id="hora">00:00</span><span>📶 🔋</span></div>
 
-    <div class="status-bar">
-        <span id="relogio">00:00</span>
-        <span id="status-net">Wi-Fi</span>
+    <div class="grid" id="desktop">
+        <div class="app-item" onclick="abrir('loja.html', 'Play Store')"><div class="icon" style="background: #27ae60;">🛍️</div><div class="label">Loja</div></div>
+        <div class="app-item" onclick="abrir('config.html', 'Ajustes')"><div class="icon" style="background: #7f8c8d;">⚙️</div><div class="label">Ajustes</div></div>
+        </div>
+
+    <div id="window">
+        <div class="header"><button onclick="fechar()" style="padding: 8px 15px; cursor:pointer;">⬅ Voltar</button> <span id="win-title" style="margin-left: 20px;">App</span></div>
+        <iframe id="win-frame" src=""></iframe>
     </div>
 
-    <div class="home" id="home">
-        <div class="app-icon" onclick="abrir('store.html')">🛍️ Store</div>
-        <div class="app-icon" onclick="abrir('config.html')">⚙️ Ajustes</div>
-        <div id="lista-apps-instalados"></div> </div>
+    <script>
+        function atualizarHora() {
+            document.getElementById('hora').innerText = new Date().toLocaleTimeString().slice(0,5);
+        }
+        setInterval(atualizarHora, 1000); atualizarHora();
 
-    <div id="janela-app">
-        <button class="btn-voltar" onclick="fechar()">✖ Sair</button>
-        <iframe id="tela-app" src=""></iframe>
-    </div>
+        function abrir(url, titulo) {
+            document.getElementById('win-title').innerText = titulo;
+            document.getElementById('win-frame').src = url;
+            document.getElementById('window').style.display = 'block';
+        }
 
-    <script src="main.js"></script>
+        function fechar() {
+            document.getElementById('window').style.display = 'none';
+            document.getElementById('win-frame').src = '';
+            render(); // Atualiza a tela ao fechar a loja
+        }
+
+        function render() {
+            // 1. Carregar Cor
+            const cor = localStorage.getItem('bg-cor') || '#1a1a1a';
+            document.getElementById('os-bg').style.backgroundColor = cor;
+
+            // 2. Carregar Apps Baixados
+            const container = document.getElementById('desktop');
+            document.querySelectorAll('.instalado').forEach(e => e.remove());
+            
+            const apps = JSON.parse(localStorage.getItem('meus-apps')) || [];
+            apps.forEach((app, i) => {
+                const div = document.createElement('div');
+                div.className = 'app-item instalado';
+                div.innerHTML = `
+                    <div class="icon" onclick="abrir('${app.url}', '${app.nome}')">🎮</div>
+                    <div class="label">${app.nome}</div>
+                    <button class="btn-apagar" onclick="apagar(${i})">X</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function apagar(index) {
+            event.stopPropagation();
+            let apps = JSON.parse(localStorage.getItem('meus-apps'));
+            apps.splice(index, 1);
+            localStorage.setItem('meus-apps', JSON.stringify(apps));
+            render();
+        }
+
+        window.onload = render;
+    </script>
 </body>
 </html>
