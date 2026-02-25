@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<body style="font-family: sans-serif; padding: 20px;">
+    <h3>Personalizar Fundo</h3>
+    <p>Escolha uma cor para o sistema:</p>
+    <button onclick="salvar('#1a1a1a')" style="background:#1a1a1a; width:60px; height:60px; border-radius: 10px; cursor:pointer; border: 2px solid #ccc;"></button>
+    <button onclick="salvar('#2980b9')" style="background:#2980b9; width:60px; height:60px; border-radius: 10px; cursor:pointer; border: 2px solid #ccc;"></button>
+    <button onclick="salvar('#8e44ad')" style="background:#8e44ad; width:60px; height:60px; border-radius: 10px; cursor:pointer; border: 2px solid #ccc;"></button>
+    <button onclick="salvar('#c0392b')" style="background:#c0392b; width:60px; height:60px; border-radius: 10px; cursor:pointer; border: 2px solid #ccc;"></button>
+
+    <script>
+        function salvar(cor) {
+            localStorage.setItem('bg-cor', cor);
+            // Altera o fundo do pai (index.html) imediatamente
+            parent.document.getElementById('os-bg').style.backgroundColor = cor;
+            alert("Cor de fundo salva!");
+        }
+    </script>
+</body>
+</html>
