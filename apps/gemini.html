@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Quantum JS Engine</title>
+    <style>
+        body { background: #050505; color: #00ff41; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .terminal { background: #000; border: 1px solid #00ff41; padding: 20px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); width: 400px; }
+        .display { font-size: 2rem; margin: 20px 0; text-align: center; border: 1px dashed #00ff41; padding: 10px; }
+        button { width: 100%; background: #00ff41; color: #000; border: none; padding: 10px; cursor: pointer; font-family: monospace; font-weight: bold; }
+        button:hover { background: #008f11; }
+        .log { font-size: 0.8rem; color: #008f11; margin-top: 15px; border-top: 1px solid #008f11; pt: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="terminal">
+    <div>> QUANTUM_CORE_INITIALIZED</div>
+    <div class="display" id="output">|Ψ⟩ = |0⟩</div>
+    <button onclick="runQuantumCircuit()">EXECUTAR PORTA HADAMARD (H)</button>
+    <div class="log" id="log">Aguardando processamento de qubit...</div>
+</div>
+
+<script>
+    // Configuração Matemática do Qubit
+    // Estado inicial |0> representado por [amplitude_0, amplitude_1]
+    let qubit = [1, 0]; 
+
+    // Constante 1/√2 para normalização quântica
+    const INV_SQRT2 = 1 / Math.sqrt(2);
+
+    function runQuantumCircuit() {
+        const logElement = document.getElementById('log');
+        const outputElement = document.getElementById('output');
+
+        // 1. Aplicação da Porta de Hadamard (H)
+        // Transforma |0> em (|0> + |1>) / √2 (Superposição Pura)
+        logElement.innerText = "Aplicando H-Gate: Criando superposição...";
+        
+        let novoEstado = [
+            INV_SQRT2 * qubit[0] + INV_SQRT2 * qubit[1],
+            INV_SQRT2 * qubit[0] - INV_SQRT2 * qubit[1]
+        ];
+
+        // 2. Colapso da Função de Onda (Medição)
+        // A probabilidade de ser 0 ou 1 é o quadrado da amplitude absoluta
+        let prob0 = Math.pow(Math.abs(novoEstado[0]), 2);
+        let randomShot = Math.random();
+        
+        let resultadoFinal = (randomShot < prob0) ? 0 : 1;
+
+        // Atualização da Interface
+        setTimeout(() => {
+            outputElement.innerText = `RESULTADO: |${resultadoFinal}⟩`;
+            logElement.innerHTML = `
+                Probabilidade |0⟩: ${Math.round(prob0 * 100)}%<br>
+                Probabilidade |1⟩: ${Math.round((1 - prob0) * 100)}%<br>
+                Estado medido com sucesso.
+            `;
+        }, 300);
+    }
+</script>
+
+</body>
+</html>
