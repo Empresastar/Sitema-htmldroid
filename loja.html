@@ -1,27 +1,46 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<body style="font-family: sans-serif; padding: 20px; background: #f9f9f9;">
-    <h3>Play Store - Baixar Jogos</h3>
-    <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd;">
-        <span>Pluto TV (Streaming)</span>
-        <button onclick="baixar('Pluto TV', 'https://pluto.tv')" style="background: green; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Instalar</button>
-    </div>
-    <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd;">
-        <span>Jogo 2048</span>
-        <button onclick="baixar('2048', 'https://play2048.co/')" style="background: green; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Instalar</button>
-    </div>
-
+<body style="font-family: sans-serif; padding: 20px; background: #f0f0f0;">
+    <h3>Play Store</h3>
+    <div id="lista-apps"></div>
     <script>
-        function baixar(nome, url) {
-            let apps = JSON.parse(localStorage.getItem('meus-apps')) || [];
-            if(!apps.find(a => a.nome === nome)) {
-                apps.push({nome, url});
-                localStorage.setItem('meus-apps', JSON.stringify(apps));
-                alert(nome + " instalado!");
-            } else {
-                alert("Este app já está na sua tela inicial!");
-            }
+        const catalogo = [
+            { nome: 'Google', url: 'apps/google.html', icon: '🔍' },
+            { nome: 'Gemini', url: 'apps/gemini.html', icon: '✨' },
+            { nome: 'Youtube', url: 'https://youtube.com', icon: '📺' }
+        ];
+        function renderLoja() {
+            const container = document.getElementById('lista-apps');
+            const instalados = JSON.parse(localStorage.getItem('meus-apps')) || [];
+            container.innerHTML = '';
+            catalogo.forEach(app => {
+                const jaTem = instalados.find(a => a.nome === app.nome);
+                container.innerHTML += `
+                    <div style="background:white; padding:15px; border-radius:10px; margin-bottom:10px;">
+                        <strong>${app.icon} ${app.nome}</strong>
+                        <div id="bar-${app.nome}" style="width:0%; height:4px; background:blue; transition:0.3s; margin:10px 0;"></div>
+                        ${jaTem ? `<button onclick="remover('${app.nome}')" style="background:red; color:white; border:none; padding:8px; border-radius:5px;">Desinstalar</button>` 
+                        : `<button id="btn-${app.nome}" onclick="baixar('${app.nome}', '${app.url}', '${app.icon}')" style="background:blue; color:white; border:none; padding:8px; border-radius:5px;">Instalar</button>`}
+                    </div>`;
+            });
         }
+        function baixar(nome, url, icon) {
+            const barra = document.getElementById('bar-'+nome);
+            let p = 0;
+            let int = setInterval(() => {
+                p += 25; barra.style.width = p + "%";
+                if(p >= 100) {
+                    clearInterval(int);
+                    let apps = JSON.parse(localStorage.getItem('meus-apps')) || [];
+                    apps.push({nome, url, icon});
+                    localStorage.setItem('meus-apps', JSON.stringify(apps));
+                    renderLoja();
+                }
+            }, 300);
+        }
+        function remover(nome) {
+            let apps = JSON.parse(localStorage.getItem('meus-apps')).filter(a => a.nome !== nome);
+            localStorage.setItem('meus-apps', JSON.stringify(apps));
+            renderLoja();
+        }
+        renderLoja();
     </script>
 </body>
-</html>
