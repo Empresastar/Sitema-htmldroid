@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<body style="font-family: sans-serif; padding: 20px; background: #f9f9f9;">
+    <h3>Play Store - Baixar Jogos</h3>
+    <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd;">
+        <span>Pluto TV (Streaming)</span>
+        <button onclick="baixar('Pluto TV', 'https://pluto.tv')" style="background: green; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Instalar</button>
+    </div>
+    <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd;">
+        <span>Jogo 2048</span>
+        <button onclick="baixar('2048', 'https://play2048.co/')" style="background: green; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Instalar</button>
+    </div>
+
+    <script>
+        function baixar(nome, url) {
+            let apps = JSON.parse(localStorage.getItem('meus-apps')) || [];
+            if(!apps.find(a => a.nome === nome)) {
+                apps.push({nome, url});
+                localStorage.setItem('meus-apps', JSON.stringify(apps));
+                alert(nome + " instalado!");
+            } else {
+                alert("Este app já está na sua tela inicial!");
+            }
+        }
+    </script>
+</body>
+</html>
