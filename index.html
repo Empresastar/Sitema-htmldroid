@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Console Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="corpo">
+
+    <div class="status-bar">
+        <span id="relogio">00:00</span>
+        <span id="status-net">Wi-Fi</span>
+    </div>
+
+    <div class="home" id="home">
+        <div class="app-icon" onclick="abrir('store.html')">🛍️ Store</div>
+        <div class="app-icon" onclick="abrir('config.html')">⚙️ Ajustes</div>
+        <div id="lista-apps-instalados"></div> </div>
+
+    <div id="janela-app">
+        <button class="btn-voltar" onclick="fechar()">✖ Sair</button>
+        <iframe id="tela-app" src=""></iframe>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
